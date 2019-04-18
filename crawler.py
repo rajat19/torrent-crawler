@@ -9,7 +9,7 @@ import requests
 
 class Crawler:
 
-    list_url = 'https://yts.am/browse-movies?page={0}'
+    list_url = 'https://yts.am/browse-movies'
     header_format = 'ID|Name|Year|Link|Rotten Tomatoes Critics|Rotten Tomatoes Audience|IMDb' \
                     '|3D.BluRay|720p.BluRay|1080p.BluRay|720p.WEB|1080p.WEB\n' \
                     '---|---|---|---|---|---|---|---|---|---|---|---'
@@ -19,6 +19,8 @@ class Crawler:
     all_formats = []
     readme_created = True
     id = 1
+    should_save_list = False
+    max_movies_in_page = 20
 
     @staticmethod
     def fill_non_existing(movie):
@@ -76,15 +78,20 @@ class Crawler:
             print(movie_text, file=text_file)
         self.id += 1
 
-    def crawl_list(self):
+    def crawl_list(self, crawl_url):
         movies = []
         page_no = 1
-        while True:
-            req = requests.get(self.list_url.format(page_no))
+        has_next_page = True
+        while has_next_page:
+            if not crawl_url:
+                crawl_url = self.list_url
+            if page_no > 1:
+                crawl_url = crawl_url + '?page=' + page_no
+            req = requests.get(crawl_url)
             soup = BeautifulSoup(req.text, features='html5lib')
             movie_wraps = soup.find_all('div', {'class': 'browse-movie-wrap'})
-            if len(movie_wraps) == 0:
-                break
+            if len(movie_wraps) < self.max_movies_in_page:
+                has_next_page = False
             for wrap in movie_wraps:
                 movie_link = wrap.find('a', {'class': 'browse-movie-link'}).get('href')
                 movie_details = wrap.find('div', {'class': 'browse-movie-bottom'})
@@ -99,7 +106,8 @@ class Crawler:
                 movie = self.crawl_movie(movie_link, movie)
                 movies.append(movie)
                 print(movie_name)
-                self.save_list(movie)
+                if self.should_save_list:
+                    self.save_list(movie)
             page_no += 1
         return movies
 
@@ -135,6 +143,7 @@ class Crawler:
 
 if __name__ == "__main__":
     crawler = Crawler()
+    crawler.should_save_list = True
     movies_list = crawler.crawl_list()
     complete_list = []
     # for movie in movies_list:
