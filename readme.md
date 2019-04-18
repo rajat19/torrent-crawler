@@ -14,9 +14,13 @@ More would be crawled soon
 - Open PR for the torrent-crawler
 - You can fork my repo and edit the python script as you like
 
+---
+### Fixes todo
+- Fix details of some movies (was not getting extracted)
+- Remove empty links
 
 ---
 ### Work To Do
 - Search for movies directly from console
 - Sort movies based on genre/rating/old/new etc
-- Fix details of some movies (was not getting extracted)
+
