@@ -16,6 +16,6 @@ More would be crawled soon
 ---
 ### Work To Do
 - Add animation in readme of search script
-- Show progress bar in console
 - Allow user to stop movie search in between
 - Add as python library
+- Store search history in cache or something for faster processing

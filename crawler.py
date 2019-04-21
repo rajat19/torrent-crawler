@@ -1,10 +1,31 @@
 # yts.am as of 15/04/2019
 
 from bs4 import BeautifulSoup
-import csv
-import json
-import os
-import requests
+import os, re, requests, sys
+
+
+class ProgressBar:
+    @staticmethod
+    def update_progress(index, total):
+        bar_length = 10
+        status = ""
+        progress = index / total
+        if isinstance(progress, int):
+            progress = float(progress)
+        if not isinstance(progress, float):
+            progress = 0
+            status = "error: progress var must be float\r\n"
+        if progress < 0:
+            progress = 0
+            status = "Halt...\r\n"
+        if progress >= 1:
+            progress = 1
+            status = "Done...\r\n"
+        block = int(round(bar_length * progress))
+        text = "\rCrawling like a snake: [{0}] {1}% [{2}/{3}] {4}".format(
+            "#"*block + "-"*(bar_length - block), int(progress*100), index, total, status)
+        sys.stdout.write(text)
+        sys.stdout.flush()
 
 
 class Crawler:
@@ -83,13 +104,22 @@ class Crawler:
         page_no = 1
         has_next_page = True
         movies = []
+        current_movie_count = 1
+        movies_count = 0
         while has_next_page:
             if not crawl_url:
                 crawl_url = self.list_url
+            request_url = crawl_url
             if page_no > 1:
-                crawl_url = '{0}?page={1}'.format(crawl_url, page_no)
-            req = requests.get(crawl_url)
+                request_url = '{0}?page={1}'.format(crawl_url, page_no)
+            req = requests.get(request_url)
             soup = BeautifulSoup(req.text, features='html5lib')
+            if page_no == 1:
+                movies_count_text = soup.find('div', {'class': 'browse-content'}).find('h2').text
+                movies_count_text = movies_count_text.replace(',', '')
+                movies_count = re.match(r'(\d+) YIFY Movies Found', movies_count_text).group(1)
+                movies_count = int(movies_count)
+                print('Total {} movies found'.format(movies_count))
             movie_wraps = soup.find_all('div', {'class': 'browse-movie-wrap'})
             if len(movie_wraps) < self.max_movies_in_page:
                 has_next_page = False
@@ -107,9 +137,11 @@ class Crawler:
                 movie = self.crawl_movie(movie_link, movie)
                 movies.append(movie)
                 if self.should_print_to_console:
-                    print(movie_name)
+                    print('{}: {}'.format(current_movie_count, movie_name))
                 if self.should_save_list:
                     self.save_list(movie)
+                ProgressBar.update_progress(current_movie_count, movies_count)
+                current_movie_count += 1
             page_no += 1
         return movies
 
@@ -144,10 +176,9 @@ class Crawler:
 
 if __name__ == "__main__":
     crawler = Crawler()
-    crawler.should_save_list = True
+    crawler.should_save_list = False
     crawler.should_print_to_console = True
-    crawler.crawl_list()
-    movies_list = crawler.movies
+    movies_list = crawler.crawl_list('https://yts.am/browse-movies/american/all/all/0/latest')
     # complete_list = []
     # for movie in movies_list:
     #     complete_list.append(crawler.crawl_movie(movie['link'], movie))

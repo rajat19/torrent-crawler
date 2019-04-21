@@ -24,7 +24,6 @@ class Search:
     def search_torrent(self, search_query: SearchQuery):
         url = self.search_url.format(search_query.search_term, search_query.quality, search_query.genre,
                                      search_query.rating, search_query.order_by)
-        print('Please wait while movies are being crawled........')
         crawler = Crawler()
         movies = crawler.crawl_list(url)
         print('Movies List: ')
@@ -56,7 +55,7 @@ class Search:
         if len(available_torrents.values()) == 0:
             print('No torrents available for this movie')
         else:
-            ati = 0
+            ati = 1
             for torrent_format in available_torrents:
                 print('{0}: {1}'.format(ati, torrent_format))
                 ati += 1
