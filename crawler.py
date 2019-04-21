@@ -20,6 +20,7 @@ class Crawler:
     readme_created = True
     id = 1
     should_save_list = False
+    should_print_to_console = False
     max_movies_in_page = 20
 
     @staticmethod
@@ -79,14 +80,14 @@ class Crawler:
         self.id += 1
 
     def crawl_list(self, crawl_url):
-        movies = []
         page_no = 1
         has_next_page = True
+        movies = []
         while has_next_page:
             if not crawl_url:
                 crawl_url = self.list_url
             if page_no > 1:
-                crawl_url = crawl_url + '?page=' + page_no
+                crawl_url = '{0}?page={1}'.format(crawl_url, page_no)
             req = requests.get(crawl_url)
             soup = BeautifulSoup(req.text, features='html5lib')
             movie_wraps = soup.find_all('div', {'class': 'browse-movie-wrap'})
@@ -105,14 +106,14 @@ class Crawler:
                 }
                 movie = self.crawl_movie(movie_link, movie)
                 movies.append(movie)
-                print(movie_name)
+                if self.should_print_to_console:
+                    print(movie_name)
                 if self.should_save_list:
                     self.save_list(movie)
             page_no += 1
         return movies
 
-    @staticmethod
-    def crawl_movie(movie_link, movie_details):
+    def crawl_movie(self, movie_link, movie_details):
         req = requests.get(movie_link)
         soup = BeautifulSoup(req.text, features='html5lib')
         movie_info = soup.find('div', {'id': 'movie-info'})
@@ -136,7 +137,7 @@ class Crawler:
                         rating_list[rater] = rating_given
             movie_details['torrents'] = torrent_list
             movie_details['ratings'] = rating_list
-        else:
+        elif self.should_print_to_console:
             print("{} got no info, not saving it".format(movie_details['name']))
         return movie_details
 
@@ -144,8 +145,10 @@ class Crawler:
 if __name__ == "__main__":
     crawler = Crawler()
     crawler.should_save_list = True
-    movies_list = crawler.crawl_list()
-    complete_list = []
+    crawler.should_print_to_console = True
+    crawler.crawl_list()
+    movies_list = crawler.movies
+    # complete_list = []
     # for movie in movies_list:
     #     complete_list.append(crawler.crawl_movie(movie['link'], movie))
     # with open("movies.json", "w") as f:

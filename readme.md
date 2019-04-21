@@ -1,7 +1,6 @@
-## Torrent Crawler
+## Torrent Crawler and Search
 
 Crawl and store data of around 12,000 movies
-Currently crawling only **yts.am**
 
 - Feature to directly download torrent just by clicking movie name in movies.md
 
@@ -15,12 +14,8 @@ More would be crawled soon
 - You can fork my repo and edit the python script as you like
 
 ---
-### Fixes todo
-- Fix details of some movies (was not getting extracted)
-- Remove empty links
-
----
 ### Work To Do
-- Search for movies directly from console
-- Sort movies based on genre/rating/old/new etc
-
+- Add animation in readme of search script
+- Show progress bar in console
+- Allow user to stop movie search in between
+- Add as python library
