@@ -75,8 +75,8 @@ if __name__ == '__main__':
         print('Please enter search string: ')
         s = input()
 
-	q = 0
-	"""
+        q = 0
+        """
         print('Please enter any specific quality of your torrent: ')
         quality_options = Constants.quality
         for i in range(len(quality_options)):
@@ -85,7 +85,7 @@ if __name__ == '__main__':
         while q > 4 or q < 0:
             print('Wrong option, Try again')
         q = quality_options[q]
-	"""
+        """
 
         print('Please enter any specific genre of your torrent: ')
         genre_options = Constants.genre
