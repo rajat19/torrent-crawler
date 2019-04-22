@@ -1,12 +1,12 @@
 ## Torrent Crawler and Search
 
-Crawl and store data of around 12,000 movies
+Search any torrent using search.py script
+```bash
+git clone https://github.com/rajat19/torrent-crawler.git
+cd torrent-crawler
 
-- Feature to directly download torrent just by clicking movie name in movies.md
-
-**As of 15/04/2019 8:28AM IST** crawled around 1000 movies
-
-More would be crawled soon
+python3 search.py
+```
 
 ---
 ### Contributing
