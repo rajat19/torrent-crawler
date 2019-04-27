@@ -1,4 +1,4 @@
-from crawler import Crawler
+from torrent_crawler.crawler import Crawler
 
 
 class Constants:
@@ -7,7 +7,7 @@ class Constants:
              'family', 'fantasy', 'film-noir', 'game-show', 'history', 'horror', 'music', 'musical', 'mystery',
              'news', 'reality-tv', 'romance', 'sci-fi', 'sport', 'talk-show', 'thriller', 'war', 'western']
     order_by = ['rating', 'seeds', 'peers', 'year', 'likes', 'alphabetical', 'downloads']
-
+    search_url = 'https://yts.am/browse-movies/{0}/{1}/{2}/{3}/{4}'
 
 class SearchQuery:
     def __init__(self, search_term, quality, genre, rating, order_by):
@@ -19,11 +19,10 @@ class SearchQuery:
 
 
 class Search:
-    search_url = 'https://yts.am/browse-movies/{0}/{1}/{2}/{3}/{4}'
 
     def search_torrent(self, search_query: SearchQuery):
-        url = self.search_url.format(search_query.search_term, search_query.quality, search_query.genre,
-                                     search_query.rating, search_query.order_by)
+        url = Constants.search_url.format(search_query.search_term, search_query.quality, search_query.genre,
+                                          search_query.rating, search_query.order_by)
         crawler = Crawler()
         movies = crawler.crawl_list(url)
         print('Movies List: ')
@@ -160,11 +159,11 @@ class Search:
 if __name__ == '__main__':
     print('##########################################')
     print()
-    print('#     #  #####  #       #  #  #####  #####')
-    print('# # # #  #   #   #     #   #  #      #    ')
-    print('#  #  #  #   #    #   #    #  ###    #####')
-    print('#     #  #   #     # #     #  #          #')
-    print('#     #  #####      #      #  #####  #####')
+    print('#     #  #####  #   #  #  #####  #####')
+    print('# # # #  #   #  #   #  #  #      #    ')
+    print('#  #  #  #   #  #   #  #  ###    #####')
+    print('#     #  #   #   # #   #  #          #')
+    print('#     #  #####    #    #  #####  #####')
     print()
     print('##########################################')
     print('###                                    ###')

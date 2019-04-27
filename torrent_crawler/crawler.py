@@ -1,7 +1,10 @@
 # yts.am as of 15/04/2019
 
 from bs4 import BeautifulSoup
-import os, re, requests, sys
+import os
+import re
+import requests
+import sys
 
 
 class ProgressBar:
