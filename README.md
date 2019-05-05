@@ -1,18 +1,19 @@
 ## Torrent Crawler and Search
 Search for torrents using command line
 
-```python3
+```bash
 pip install search-torrent
 search-torrent
 ```
 
 ---
 ### Contributing
-```python3
+```bash
 git clone https://github.com/rajat19/torrent-search.git
 cd torrent-search
 pip install -r requirements.txt
 python setup.py install
+python search.py
 ```
 
 ---

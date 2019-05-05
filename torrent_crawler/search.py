@@ -9,6 +9,7 @@ class Constants:
     order_by = ['rating', 'seeds', 'peers', 'year', 'likes', 'alphabetical', 'downloads']
     search_url = 'https://yts.am/browse-movies/{0}/{1}/{2}/{3}/{4}'
 
+
 class SearchQuery:
     def __init__(self, search_term, quality, genre, rating, order_by):
         self.search_term = search_term
@@ -19,7 +20,6 @@ class SearchQuery:
 
 
 class Search:
-
     def search_torrent(self, search_query: SearchQuery):
         url = Constants.search_url.format(search_query.search_term, search_query.quality, search_query.genre,
                                           search_query.rating, search_query.order_by)
@@ -52,7 +52,7 @@ class Search:
             available_torrents = {'720p': movie_selected['torrents']['1080p.WEB']}
 
         if len(available_torrents.values()) == 0:
-            print('No torrents available for this movie')
+            print('No torrents yet available for this movie')
         else:
             ati = 1
             for torrent_format in available_torrents:
@@ -61,17 +61,19 @@ class Search:
             if len(available_torrents) == 1:
                 op = input('Press 1 to Download, Press any other key to exit\n')
                 if op == '1':
-                    tlink = list(available_torrents.values())[0]
-                    print('Click this link: {}'.format(tlink))
+                    torrent_link = list(available_torrents.values())[0]
+                    print('Click this link: {}'.format(torrent_link))
             else:
                 print('Enter movie quality to download:')
                 qu = int(input())
-                tlink = list(available_torrents.values())[qu-1]
-                print('Click this link: {}'.format(tlink))
+                torrent_link = list(available_torrents.values())[qu-1]
+                print('Click this link: {}'.format(torrent_link))
         print('################################')
         restart_search = input('Do you want to start searching again\ny: Yes\n')
         if restart_search == 'y' or restart_search == 'Y':
             self.take_input()
+        else:
+            print('Thanks for using torrent-search . Keep Seeding')
 
     @staticmethod
     def take_genre_input():
@@ -156,7 +158,7 @@ class Search:
             print(e)
 
 
-if __name__ == '__main__':
+def main():
     print('##########################################')
     print()
     print('#     #  #####  #   #  #  #####  #####')
@@ -172,3 +174,7 @@ if __name__ == '__main__':
     print('##########################################')
     search = Search()
     search.take_input()
+
+
+if __name__ == '__main__':
+    main()
