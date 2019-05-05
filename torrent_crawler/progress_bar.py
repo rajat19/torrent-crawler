@@ -1,5 +1,5 @@
 import sys
-from color import Color
+from torrent_crawler.color import Color
 
 
 class ProgressBar:

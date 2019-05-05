@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import os
 import re
 import requests
-from progress_bar import ProgressBar
+from torrent_crawler.progress_bar import ProgressBar
 
 
 class Crawler:

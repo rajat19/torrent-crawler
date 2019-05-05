@@ -1,6 +1,6 @@
-from constants import Constants
-from color import Color
-from crawler import Crawler
+from torrent_crawler.constants import Constants
+from torrent_crawler.color import Color
+from torrent_crawler.crawler import Crawler
 import traceback
 
 
