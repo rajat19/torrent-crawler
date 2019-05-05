@@ -74,7 +74,6 @@ class Search:
                 Color.print_bold_string(Constants.movie_quality_text)
                 qu = int(input())
                 torrent_link = list(available_torrents.values())[qu-1]
-                print('{0}{1}{2}{3}'.format(Constants.click_link_text, Color.RED, torrent_link, Color.END))
                 Color.print_bold_string('{0}{1}{2}'.format(Constants.click_link_text, Color.RED, torrent_link))
         self.print_long_hash()
         print(Constants.restart_search_text)
