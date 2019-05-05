@@ -1,10 +1,11 @@
 ## Torrent Crawler and Search
-Search for torrents using command line
-
+> Search for torrents using command line
 ```bash
-pip install search-torrent
+pip3 install search-torrent
 search-torrent
 ```
+
+<p align="center"><img src="img/search-torrent.gif?raw=true"/></p>
 
 ---
 ### Contributing
@@ -17,7 +18,6 @@ python search.py
 ```
 
 ---
-### Work To Do
-- Add animation in readme of search script
+### What's next
 - Allow user to stop movie search in between
 - Store search history in cache or something for faster processing
