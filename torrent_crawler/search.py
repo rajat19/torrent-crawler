@@ -1,13 +1,7 @@
-from torrent_crawler.crawler import Crawler
-
-
-class Constants:
-    quality = ['all', '720p', '1080p', '3D']
-    genre = ['all', 'action', 'adventure', 'animation', 'biography', 'comedy', 'crime', 'documentary', 'drama',
-             'family', 'fantasy', 'film-noir', 'game-show', 'history', 'horror', 'music', 'musical', 'mystery',
-             'news', 'reality-tv', 'romance', 'sci-fi', 'sport', 'talk-show', 'thriller', 'war', 'western']
-    order_by = ['rating', 'seeds', 'peers', 'year', 'likes', 'alphabetical', 'downloads']
-    search_url = 'https://yts.am/browse-movies/{0}/{1}/{2}/{3}/{4}'
+from constants import Constants
+from color import Color
+from crawler import Crawler
+import traceback
 
 
 class SearchQuery:
@@ -20,6 +14,18 @@ class SearchQuery:
 
 
 class Search:
+    @staticmethod
+    def get_yes_no():
+        return '{0}\n{1}\n'.format(Color.get_colored_yes(), Color.get_colored_no())
+
+    @staticmethod
+    def print_long_hash():
+        print('##########################################')
+
+    @staticmethod
+    def print_wrong_option():
+        print(Constants.wrong_option_text)
+
     def search_torrent(self, search_query: SearchQuery):
         url = Constants.search_url.format(search_query.search_term, search_query.quality, search_query.genre,
                                           search_query.rating, search_query.order_by)
@@ -27,16 +33,17 @@ class Search:
         movies = crawler.crawl_list(url)
         print('Movies List: ')
         for ind, movie in enumerate(movies):
-            print('{0}: {1} ({2})'.format(ind+1, movie['name'], movie['year']))
+            print('{0}{1}: {2} ({3}){4}'.format(
+                Color.PURPLE, ind+1, movie['name'], movie['year'], Color.END))
         while True:
-            mid = int(input('Enter movie to download: '))
+            mid = int(input(Color.get_bold_string(Constants.movie_download_text)))
             if mid > len(movies) or mid < 1:
-                print('Wrong input, Try again')
+                self.print_wrong_option()
                 continue
             else:
                 break
         movie_selected = movies[mid - 1]
-        print('Available torrents: ')
+        Color.print_bold_string(Constants.available_torrents_text)
         available_torrents = {}
         if search_query.quality == 'all':
             available_torrents = movie_selected['torrents']
@@ -52,11 +59,11 @@ class Search:
             available_torrents = {'720p': movie_selected['torrents']['1080p.WEB']}
 
         if len(available_torrents.values()) == 0:
-            print('No torrents yet available for this movie')
+            print('{0}{1}{2}'.format(Color.RED, Constants.no_torrent_text, Color.END))
         else:
             ati = 1
             for torrent_format in available_torrents:
-                print('{0}: {1}'.format(ati, torrent_format))
+                print('{0}{1}: {2}{3}'.format(Color.YELLOW, ati, torrent_format, Color.END))
                 ati += 1
             if len(available_torrents) == 1:
                 op = input('Press 1 to Download, Press any other key to exit\n')
@@ -64,79 +71,79 @@ class Search:
                     torrent_link = list(available_torrents.values())[0]
                     print('Click this link: {}'.format(torrent_link))
             else:
-                print('Enter movie quality to download:')
+                Color.print_bold_string(Constants.movie_quality_text)
                 qu = int(input())
                 torrent_link = list(available_torrents.values())[qu-1]
-                print('Click this link: {}'.format(torrent_link))
-        print('################################')
-        restart_search = input('Do you want to start searching again\ny: Yes\n')
+                print('{0}{1}{2}{3}'.format(Constants.click_link_text, Color.RED, torrent_link, Color.END))
+                Color.print_bold_string('{0}{1}{2}'.format(Constants.click_link_text, Color.RED, torrent_link))
+        self.print_long_hash()
+        print(Constants.restart_search_text)
+        restart_search = input('{0}\n'.format(Color.get_colored_yes()))
         if restart_search == 'y' or restart_search == 'Y':
             self.take_input()
         else:
-            print('Thanks for using torrent-search . Keep Seeding')
+            print('{0}{1}{2}'.format(Color.BLUE, Constants.thanks_text, Color.END))
 
-    @staticmethod
-    def take_genre_input():
-        print('########################################')
-        print('Do you want to search some specific genre: ')
+    def take_genre_input(self):
+        self.print_long_hash()
+        Color.print_bold_string(Constants.genre_selection_text)
         genre_options = Constants.genre
         while True:
-            want_genre = input('y: Yes\nn: No\n')
+            want_genre = input(self.get_yes_no())
             if want_genre not in ['y', 'Y', 'n', 'N']:
-                print('Wrong option, Try again')
+                self.print_wrong_option()
                 continue
             else:
                 break
         g = 0
         if want_genre == 'y' or want_genre == 'Y':
-            print('Please enter any specific genre of your torrent: ')
+            Color.print_bold_string(Constants.specific_genre_text)
             for i in range(1, len(genre_options)):
-                print('{0}: {1}'.format(i, genre_options[i]))
+                print('{0}{1}: {2}{3}'.format(Color.YELLOW, i, genre_options[i], Color.END))
             while True:
                 g = int(input())
                 if 1 <= g <= 27:
-                    print('Wrong option, Try again')
+                    self.print_wrong_option()
                     continue
                 else:
                     break
-            print('Note:: Movies would be crawled for only {0} genre'.format(genre_options[g]))
+            Color.print_colored_note(Constants.specific_genre_note.format(genre_options[g]))
         else:
-            print('Note:: Movies would be crawled for all genre')
+            Color.print_colored_note(Constants.all_genre_note)
         return genre_options[g]
 
-    @staticmethod
-    def take_order_input():
-        print('########################################')
-        print('Do you want any specific order by which movies should be sorted')
+    def take_order_input(self):
+        self.print_long_hash()
+        Color.print_bold_string(Constants.order_selection_text)
         order_options = Constants.order_by
         while True:
-            want_order = input('y: Yes\nn: No\n')
+            want_order = input(self.get_yes_no())
             if want_order not in ['y', 'Y', 'n', 'N']:
-                print('Wrong option, Try again')
+                self.print_wrong_option()
                 continue
             else:
                 break
         o = 0
         if want_order == 'y' or want_order == 'Y':
-            print('Order by which movies would be sorted: ')
+            Color.print_bold_string(Constants.specific_order_text)
             for i in range(1, len(order_options)):
-                print('{0}: {1}'.format(i, order_options[i]))
+                print('{0}{1}: {2}{3}'.format(Color.YELLOW, i, order_options[i], Color.END))
             while True:
                 o = int(input())
                 if o > 6 or o < 1:
-                    print('Wrong option, Try again')
+                    self.print_wrong_option()
                     continue
                 else:
                     break
-            print('Note:: Movies would be downloaded by: {}'.format(order_options[o]))
+            Color.print_colored_note(Constants.specific_order_note.format(order_options[0]))
         else:
-            print('Note:: Movies would be downloaded by IMDB rating')
+            Color.print_colored_note(Constants.imdb_order_note)
         return order_options[o]
 
     def take_input(self):
         try:
-            print('##########################################')
-            s = input('Please enter search string: ')
+            self.print_long_hash()
+            s = input(Color.get_bold_string(Constants.search_string_text))
 
             q = 'all'
             """
@@ -156,10 +163,11 @@ class Search:
             self.search_torrent(sq)
         except Exception as e:
             print(e)
+            traceback.print_exc()
 
 
 def main():
-    print('##########################################')
+    print('{0}##########################################'.format(Color.DARK_CYAN))
     print()
     print('#     #  #####  #   #  #  #####  #####')
     print('# # # #  #   #  #   #  #  #      #    ')
@@ -171,7 +179,7 @@ def main():
     print('###                                    ###')
     print(' Welcome to torrent search and downloader ')
     print('###                                    ###')
-    print('##########################################')
+    print('##########################################{0}'.format(Color.END))
     search = Search()
     search.take_input()
 
