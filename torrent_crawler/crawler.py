@@ -10,7 +10,7 @@ import sys
 class ProgressBar:
     @staticmethod
     def update_progress(index, total):
-        bar_length = 10
+        bar_length = 30
         status = ""
         progress = index / total
         if isinstance(progress, int):
@@ -26,7 +26,7 @@ class ProgressBar:
             status = "Done...\r\n"
         block = int(round(bar_length * progress))
         text = "\rCrawling like a snake: [{0}] {1}% [{2}/{3}] {4}".format(
-            "#"*block + "-"*(bar_length - block), int(progress*100), index, total, status)
+            "="*block + "-"*(bar_length - block), int(progress*100), index, total, status)
         sys.stdout.write(text)
         sys.stdout.flush()
 
