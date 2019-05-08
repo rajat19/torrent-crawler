@@ -5,7 +5,7 @@ pip3 install search-torrent
 search-torrent
 ```
 
-<p align="center"><img src="img/search-torrent.gif?raw=true"/></p>
+<p align="center"><img src="img/search-torrent-colorized.gif?raw=true"/></p>
 
 ---
 ### Contributing
