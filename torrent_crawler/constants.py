@@ -18,7 +18,7 @@ class Constants:
     available_torrents_text = 'Available torrents: '
     no_torrent_text = 'No torrents yet available for this movie'
     movie_quality_text = 'Enter movie quality to download:'
-    click_link_text = 'Click this link: '
+    click_link_text = 'Torrent link will open automatically, If not then Click this link: '
     restart_search_text = 'Do you want to start searching again'
     thanks_text = 'Thanks for using torrent-search . Keep Seeding'
 

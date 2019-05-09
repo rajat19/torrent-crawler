@@ -1,7 +1,10 @@
+import os
+import sys
+import subprocess
+import traceback
 from torrent_crawler.constants import Constants
 from torrent_crawler.color import Color
 from torrent_crawler.crawler import Crawler
-import traceback
 
 
 def print_long_hash():
@@ -29,6 +32,16 @@ class Search:
     def __init__(self, search_query: SearchQuery):
         self.search_query = search_query
 
+    def open_magnet(self, magnet):
+        if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
+            os.startfile(magnet)
+        elif sys.platform.startswith('darwin'):
+            subprocess.Popen(['open', magnet],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        else:
+            subprocess.Popen(['xdg-open', magnet],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
     def get_available_torrents(self, movie_selected):
         if self.search_query.quality == 'all':
             return movie_selected['torrents']
@@ -37,11 +50,11 @@ class Search:
         if self.search_query.quality == '720p' and '720p.BluRay' in movie_selected['torrents']:
             return {'720p': movie_selected['torrents']['720p.BluRay']}
         if self.search_query.quality == '1080p' and '1080p.BluRay' in movie_selected['torrents']:
-            return {'720p': movie_selected['torrents']['1080p.BluRay']}
+            return {'1080p': movie_selected['torrents']['1080p.BluRay']}
         if self.search_query.quality == '720p' and '720p.WEB' in movie_selected['torrents']:
             return {'720p': movie_selected['torrents']['720p.WEB']}
         if self.search_query.quality == '1080p' and '1080p.WEB' in movie_selected['torrents']:
-            return {'720p': movie_selected['torrents']['1080p.WEB']}
+            return {'1080p': movie_selected['torrents']['1080p.WEB']}
         return {}
 
     def show_movies(self, movies):
@@ -63,8 +76,10 @@ class Search:
         if len(available_torrents.values()) == 0:
             print('{0}{1}{2}'.format(Color.RED, Constants.no_torrent_text, Color.END))
         else:
-            for index, torrent_format in available_torrents:
-                print('{0}{1}: {2}{3}'.format(Color.YELLOW, index+1, torrent_format, Color.END))
+            ati=1
+            for torrent_format in available_torrents:
+                print('{0}{1}: {2}{3}'.format(Color.YELLOW, ati, torrent_format, Color.END))
+                ati += 1
             if len(available_torrents) == 1:
                 op = input('Press 1 to Download, Press any other key to exit\n')
                 if op == '1':
@@ -75,6 +90,7 @@ class Search:
                 Color.print_bold_string(Constants.movie_quality_text)
                 qu = int(input())
                 torrent_link = list(available_torrents.values())[qu - 1]
+                self.open_magnet(torrent_link)
                 Color.print_bold_string('{0}{1}{2}{3}'.format(
                     Constants.click_link_text, Color.RED, torrent_link, Color.END))
             print_long_hash()
