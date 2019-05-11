@@ -6,12 +6,13 @@ with open("README.md", "r") as fh:
 setup(
     name='search-torrent',
     description='Search for torrents using command line',
-    version='1.2.0',
+    version='1.2.2',
     url='http://github.com/rajat19/torrent-crawler',
     download_url='https://github.com/rajat19/torrent-crawler/releases',
     author='Rajat Srivastava',
     author_email='rajatsri94@gmail.com',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     keywords=['pip', 'torrent', 'crawler'],
     classifiers=[
