@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import os
 import re
 import requests
-from torrent_crawler.progress_bar import ProgressBar
+from torrent_crawler.helper import update_progress
 
 
 class Crawler:
@@ -119,7 +119,7 @@ class Crawler:
                     print('{}: {}'.format(current_movie_count, movie_name))
                 if self.should_save_list:
                     self.save_list(movie)
-                ProgressBar.update_progress(current_movie_count, movies_count)
+                update_progress(current_movie_count, movies_count)
                 current_movie_count += 1
             page_no += 1
         return movies
@@ -150,6 +150,10 @@ class Crawler:
             movie_details['ratings'] = rating_list
         elif self.should_print_to_console:
             print("{} got no info, not saving it".format(movie_details['name']))
+        movie_tech_specs = soup.find('div', {'id': 'movie-tech-specs'})
+        if movie_tech_specs:
+            tech_spec = movie_tech_specs.find('div', {'class': 'tech-spec-info'})
+            movie_details['subtitle_url'] = tech_spec.find('a').get('href')
         return movie_details
 
 

@@ -7,6 +7,11 @@ class Constants:
     order_by = ['rating', 'seeds', 'peers', 'year', 'likes', 'alphabetical', 'downloads']
     search_url = 'https://yts.am/browse-movies/{0}/{1}/{2}/{3}/{4}'
 
+    # subtitle search constants
+    subtitle_base_url = 'http://www.yifysubtitles.com/{0}'
+    subtitle_search_url = 'http://www.yifysubtitles.com/search?q={0}'
+    subtitle_movie_url = 'http://www.yifysubtitles.com/movie-imdb/{0}'
+
     # texts
     search_string_text = 'Please enter search string: '
     genre_selection_text = 'Do you want to search some specific genre: '
@@ -21,6 +26,10 @@ class Constants:
     click_link_text = 'Torrent link will open automatically, If not then Click this link: '
     restart_search_text = 'Do you want to start searching again'
     thanks_text = 'Thanks for using torrent-search . Keep Seeding'
+    subtitles_selection_text = 'Do you want to download subtitles for this movie'
+    subtitle_language_text = 'Select language to get subtitles: '
+    download_zip_text = 'Subtitle would be downloaded in {0}{1}. Please check there.'
+    another_movies_text = 'Do you want to download another {0}{1} movie'
 
     # note
     specific_genre_note = 'Movies would be crawled for only {0} genre'

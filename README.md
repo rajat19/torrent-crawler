@@ -18,6 +18,10 @@ python search.py
 ```
 
 ---
+### What's new
+Added support to download subtitles for the movie as well
+
+---
 ### What's next
 - Allow user to stop movie search in between
 - Store search history in cache or something for faster processing

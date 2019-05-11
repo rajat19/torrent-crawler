@@ -1,22 +1,9 @@
-import os
-import sys
-import subprocess
 import traceback
 from torrent_crawler.constants import Constants
 from torrent_crawler.color import Color
 from torrent_crawler.crawler import Crawler
-
-
-def print_long_hash():
-    print('##########################################')
-
-
-def print_wrong_option():
-    print(Constants.wrong_option_text)
-
-
-def get_yes_no():
-    return '{0}\n{1}\n'.format(Color.get_colored_yes(), Color.get_colored_no())
+from torrent_crawler.helper import open_magnet_link, print_wrong_option, get_yes_no, print_long_hash
+from torrent_crawler.subtitle import Subtitle
 
 
 class SearchQuery:
@@ -31,16 +18,6 @@ class SearchQuery:
 class Search:
     def __init__(self, search_query: SearchQuery):
         self.search_query = search_query
-
-    def open_magnet(self, magnet):
-        if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
-            os.startfile(magnet)
-        elif sys.platform.startswith('darwin'):
-            subprocess.Popen(['open', magnet],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        else:
-            subprocess.Popen(['xdg-open', magnet],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def get_available_torrents(self, movie_selected):
         if self.search_query.quality == 'all':
@@ -76,7 +53,7 @@ class Search:
         if len(available_torrents.values()) == 0:
             print('{0}{1}{2}'.format(Color.RED, Constants.no_torrent_text, Color.END))
         else:
-            ati=1
+            ati = 1
             for torrent_format in available_torrents:
                 print('{0}{1}: {2}{3}'.format(Color.YELLOW, ati, torrent_format, Color.END))
                 ati += 1
@@ -90,11 +67,18 @@ class Search:
                 Color.print_bold_string(Constants.movie_quality_text)
                 qu = int(input())
                 torrent_link = list(available_torrents.values())[qu - 1]
-                self.open_magnet(torrent_link)
+                open_magnet_link(torrent_link)
                 Color.print_bold_string('{0}{1}{2}{3}'.format(
                     Constants.click_link_text, Color.RED, torrent_link, Color.END))
             print_long_hash()
-            print('Want to download another {0}{1} movie'.format(
+            Color.print_bold_string(Constants.subtitles_selection_text)
+            download_subtitle = input(get_yes_no())
+            if download_subtitle == 'y' or download_subtitle == 'Y':
+                subtitle = Subtitle()
+                subtitle.search_subtitle(movie_selected['subtitle_url'])
+
+            print_long_hash()
+            print(Constants.another_movies_text.format(
                 Color.RED, Color.get_bold_string(self.search_query.search_term)))
             reshow_movies = input(get_yes_no())
             if reshow_movies == 'y' or reshow_movies == 'Y':
@@ -135,10 +119,10 @@ class SearchInput:
             while True:
                 g = int(input())
                 if 1 <= g <= 27:
+                    break
+                else:
                     print_wrong_option()
                     continue
-                else:
-                    break
             Color.print_colored_note(Constants.specific_genre_note.format(genre_options[g]))
         else:
             Color.print_colored_note(Constants.all_genre_note)
