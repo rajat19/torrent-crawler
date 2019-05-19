@@ -11,7 +11,7 @@ class Color:
     END = '\033[0m'
 
     @staticmethod
-    def get_bold_string(string):
+    def get_bold_string(string) -> str:
         return '{0}{1}{2}'.format(Color.BOLD, string, Color.END)
 
     @staticmethod
@@ -19,11 +19,11 @@ class Color:
         print(Color.get_bold_string(string))
 
     @staticmethod
-    def get_colored_yes():
+    def get_colored_yes() -> str:
         return '{0}y: Yes{1}'.format(Color.GREEN, Color.END)
 
     @staticmethod
-    def get_colored_no():
+    def get_colored_no() -> str:
         return '{0}n: No{1}'.format(Color.RED, Color.END)
 
     @staticmethod

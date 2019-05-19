@@ -4,53 +4,65 @@ from bs4 import BeautifulSoup
 import os
 import re
 import requests
+from typing import List
 from torrent_crawler.helper import update_progress
 
 
-class Crawler:
+class Ratings:
+    def __int__(self):
+        self.rotten_tomatoes_critics = ''
+        self.rotten_tomatoes_audience = ''
+        self.imdb = ''
 
-    list_url = 'https://yts.am/browse-movies'
+    def set_fields(self, ratings):
+        if 'Rotten Tomatoes Critics - Certified Fresh' in ratings:
+            self.rotten_tomatoes_critics = ratings['Rotten Tomatoes Critics - Certified Fresh']
+        if 'Rotten Tomatoes Audience - Upright' in ratings:
+            self.rotten_tomatoes_audience = ratings['Rotten Tomatoes Audience - Upright']
+        if 'IMDb Rating' in ratings:
+            self.imdb = ratings['IMDb Rating']
+
+
+class Torrents:
+    def __init__(self):
+        self.br3d = ''
+        self.br720 = ''
+        self.br1080 = ''
+        self.web720 = ''
+        self.web1080 = ''
+
+    def set_fields(self, torrents):
+        if '3D.BluRay' in torrents:
+            self.br3d = torrents['3D.BluRay']
+        if '720p.BluRay' in torrents:
+            self.br720 = torrents['720p.BluRay']
+        if '1080p.BluRay' in torrents:
+            self.br1080 = torrents['1080p.BluRay']
+        if '720p.WEB' in torrents:
+            self.web720 = torrents['720p.WEB']
+        if '1080p.WEB' in torrents:
+            self.web1080 = torrents['1080p.WEB']
+
+
+class Movie:
     header_format = 'ID|Name|Year|Link|Rotten Tomatoes Critics|Rotten Tomatoes Audience|IMDb' \
                     '|3D.BluRay|720p.BluRay|1080p.BluRay|720p.WEB|1080p.WEB\n' \
                     '---|---|---|---|---|---|---|---|---|---|---|---'
+    file_name = 'movies.md'
     movie_format = '{}|{}|{}|[Link]({})|{}|{}|{}|' \
                    ' [3D.BluRay]({})|[720p.BluRay]({})|[1080p.BluRay]({})|[720p.WEB]({})|[1080p.WEB]({})'
-    file_name = 'movies.md'
-    all_formats = []
     readme_created = True
-    id = 1
-    should_save_list = False
-    should_print_to_console = False
-    max_movies_in_page = 20
 
-    @staticmethod
-    def fill_non_existing(movie):
-        if 'ratings' not in movie:
-            movie['ratings'] = {}
-        if 'torrents' not in movie:
-            movie['torrents'] = {}
-        movie_ratings = movie['ratings']
-        movie_torrents = movie['torrents']
-        if 'Rotten Tomatoes Critics - Certified Fresh' not in movie_ratings:
-            movie['ratings']['Rotten Tomatoes Critics - Certified Fresh'] = ''
-        if 'Rotten Tomatoes Audience - Upright' not in movie_ratings:
-            movie['ratings']['Rotten Tomatoes Audience - Upright'] = ''
-        if 'IMDb Rating' not in movie_ratings:
-            movie['ratings']['IMDb Rating'] = ''
+    def __init__(self, id, name, link, year):
+        self.id = id
+        self.name = name
+        self.link = link
+        self.year = year
+        self.torrents = Torrents()
+        self.ratings = Ratings()
+        self.subtitle_url = ''
 
-        if '3D.BluRay' not in movie_torrents:
-            movie['torrents']['3D.BluRay'] = ''
-        if '720p.BluRay' not in movie_torrents:
-            movie['torrents']['720p.BluRay'] = ''
-        if '1080p.BluRay' not in movie_torrents:
-            movie['torrents']['1080p.BluRay'] = ''
-        if '720p.WEB' not in movie_torrents:
-            movie['torrents']['720p.WEB'] = ''
-        if '1080p.WEB' not in movie_torrents:
-            movie['torrents']['1080p.WEB'] = ''
-        return movie
-
-    def save_list(self, movie):
+    def save_list(self):
         exists = True
         if self.readme_created is False:
             exists = os.path.isfile(self.file_name)
@@ -60,26 +72,40 @@ class Crawler:
             with open(self.file_name, 'w') as text_file:
                 print(header, file=text_file)
 
-        movie = self.fill_non_existing(movie)
-        movie_text = self.movie_format.format(
-            self.id,
-            movie['name'],
-            movie['year'],
-            movie['link'],
-            movie['ratings']['Rotten Tomatoes Critics - Certified Fresh'],
-            movie['ratings']['Rotten Tomatoes Audience - Upright'],
-            movie['ratings']['IMDb Rating'],
-            movie['torrents']['3D.BluRay'],
-            movie['torrents']['720p.BluRay'],
-            movie['torrents']['1080p.BluRay'],
-            movie['torrents']['720p.WEB'],
-            movie['torrents']['1080p.WEB']
-        )
+        movie_text = self.movie_text()
         with open(self.file_name, 'a') as text_file:
             print(movie_text, file=text_file)
-        self.id += 1
 
-    def crawl_list(self, crawl_url):
+    def movie_text(self):
+        return self.movie_format.format(
+            self.id,
+            self.name,
+            self.year,
+            self.link,
+            self.ratings.rotten_tomatoes_critics,
+            self.ratings.rotten_tomatoes_audience,
+            self.ratings.imdb,
+            self.torrents.br3d,
+            self.torrents.br720,
+            self.torrents.br1080,
+            self.torrents.web720,
+            self.torrents.web1080
+        )
+
+
+MoviesList = List[Movie]
+
+
+class Crawler:
+
+    list_url = 'https://yts.am/browse-movies'
+    all_formats = []
+    id = 1
+    should_save_list = False
+    should_print_to_console = False
+    max_movies_in_page = 20
+
+    def crawl_list(self, crawl_url: str) -> MoviesList:
         page_no = 1
         has_next_page = True
         movies = []
@@ -108,24 +134,20 @@ class Crawler:
                 movie_name = movie_details.find('a', {'class': 'browse-movie-title'}).text
                 movie_year = movie_details.find('div', {'class': 'browse-movie-year'}).text
                 # TODO: find and use movie tags
-                movie = {
-                    'name': movie_name,
-                    'link': movie_link,
-                    'year': int(movie_year)
-                }
-                movie = self.crawl_movie(movie_link, movie)
+                movie = Movie(current_movie_count, movie_name, movie_link, int(movie_year))
+                movie = self.crawl_movie(movie)
                 movies.append(movie)
                 if self.should_print_to_console:
                     print('{}: {}'.format(current_movie_count, movie_name))
                 if self.should_save_list:
-                    self.save_list(movie)
+                    movie.save_list()
                 update_progress(current_movie_count, movies_count)
                 current_movie_count += 1
             page_no += 1
         return movies
 
-    def crawl_movie(self, movie_link, movie_details):
-        req = requests.get(movie_link)
+    def crawl_movie(self, movie: Movie) -> Movie:
+        req = requests.get(movie.link)
         soup = BeautifulSoup(req.text, features='html5lib')
         movie_info = soup.find('div', {'id': 'movie-info'})
         if movie_info:
@@ -146,15 +168,15 @@ class Crawler:
                     rating_given = rating.find('span').text
                     if rater and rating_given:
                         rating_list[rater] = rating_given
-            movie_details['torrents'] = torrent_list
-            movie_details['ratings'] = rating_list
+            movie.torrents.set_fields(torrent_list)
+            movie.ratings.set_fields(rating_list)
         elif self.should_print_to_console:
-            print("{} got no info, not saving it".format(movie_details['name']))
+            print("{} got no info, not saving it".format(movie.name))
         movie_tech_specs = soup.find('div', {'id': 'movie-tech-specs'})
         if movie_tech_specs:
             tech_spec = movie_tech_specs.find('div', {'class': 'tech-spec-info'})
-            movie_details['subtitle_url'] = tech_spec.find('a').get('href')
-        return movie_details
+            movie.subtitle_url = tech_spec.find('a').get('href')
+        return movie
 
 
 if __name__ == "__main__":

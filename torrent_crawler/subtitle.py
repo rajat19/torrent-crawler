@@ -63,7 +63,6 @@ class Subtitle:
         return languages[lang-1]
 
     def search_subtitle(self, url):
-        # url = Constants.subtitle_movie_url.format(imdb_id)
         subtitles = self.crawl_movie(url)
         lang = self.take_language_input(list(subtitles.keys()))
         # Download first subtitle for that language as it is highest rated

@@ -1,9 +1,19 @@
+import signal
 import traceback
+from typing import Dict, List
 from torrent_crawler.constants import Constants
 from torrent_crawler.color import Color
-from torrent_crawler.crawler import Crawler
+from torrent_crawler.crawler import Crawler, Movie, Torrents
 from torrent_crawler.helper import open_magnet_link, print_wrong_option, get_yes_no, print_long_hash
 from torrent_crawler.subtitle import Subtitle
+
+
+def sigint_handler(signum, frame):
+    print('\n{0}{1}{2}'.format(Color.BLUE, Constants.thanks_text, Color.END))
+    exit(1)
+
+
+signal.signal(signal.SIGINT, sigint_handler)
 
 
 class SearchQuery:
@@ -19,26 +29,27 @@ class Search:
     def __init__(self, search_query: SearchQuery):
         self.search_query = search_query
 
-    def get_available_torrents(self, movie_selected):
-        if self.search_query.quality == 'all':
-            return movie_selected['torrents']
-        if self.search_query.quality == '3D' and '3D' in movie_selected['torrents']:
-            return {'3D': movie_selected['torrents']['3D']}
-        if self.search_query.quality == '720p' and '720p.BluRay' in movie_selected['torrents']:
-            return {'720p': movie_selected['torrents']['720p.BluRay']}
-        if self.search_query.quality == '1080p' and '1080p.BluRay' in movie_selected['torrents']:
-            return {'1080p': movie_selected['torrents']['1080p.BluRay']}
-        if self.search_query.quality == '720p' and '720p.WEB' in movie_selected['torrents']:
-            return {'720p': movie_selected['torrents']['720p.WEB']}
-        if self.search_query.quality == '1080p' and '1080p.WEB' in movie_selected['torrents']:
-            return {'1080p': movie_selected['torrents']['1080p.WEB']}
-        return {}
+    def get_available_torrents(self, torrents: Torrents) -> Dict:
+        available_torrents = {}
+        if self.search_query.quality in ['all', '3D'] and 'br3d' in torrents:
+            available_torrents['3D.BluRay'] = torrents.br3d
+        if self.search_query.quality in ['all', '720'] and 'br720' in torrents:
+            available_torrents['720p.BluRay'] = torrents.br720
+        if self.search_query.quality in ['all', '1080'] and 'br1080' in torrents:
+            available_torrents['1080p.BluRay'] = torrents.br1080
+        if self.search_query.quality in ['all', '720'] and 'web720' in torrents:
+            available_torrents['720p.WEB'] = torrents.br720
+        if self.search_query.quality in ['all', '1080'] and 'web1080' in torrents:
+            available_torrents['1080p.WEB'] = torrents.br1080
+        return available_torrents
 
-    def show_movies(self, movies):
+    MoviesList = List[Movie]
+
+    def show_movies(self, movies: MoviesList):
         print('Movies List: ')
         for ind, movie in enumerate(movies):
             print('{0}{1}: {2} ({3}){4}'.format(
-                Color.PURPLE, ind + 1, movie['name'], movie['year'], Color.END))
+                Color.PURPLE, ind + 1, movie.name, movie.year, Color.END))
         while True:
             mid = int(input(Color.get_bold_string(Constants.movie_download_text)))
             if mid > len(movies) or mid < 1:
@@ -49,12 +60,12 @@ class Search:
         movie_selected = movies[mid - 1]
         Color.print_bold_string(Constants.available_torrents_text)
 
-        available_torrents = self.get_available_torrents(movie_selected)
+        available_torrents = self.get_available_torrents(movie_selected.torrents)
         if len(available_torrents.values()) == 0:
             print('{0}{1}{2}'.format(Color.RED, Constants.no_torrent_text, Color.END))
         else:
             ati = 1
-            for torrent_format in available_torrents:
+            for torrent_format in list(available_torrents):
                 print('{0}{1}: {2}{3}'.format(Color.YELLOW, ati, torrent_format, Color.END))
                 ati += 1
             if len(available_torrents) == 1:
@@ -75,7 +86,7 @@ class Search:
             download_subtitle = input(get_yes_no())
             if download_subtitle == 'y' or download_subtitle == 'Y':
                 subtitle = Subtitle()
-                subtitle.search_subtitle(movie_selected['subtitle_url'])
+                subtitle.search_subtitle(movie_selected.subtitle_url)
 
             print_long_hash()
             print(Constants.another_movies_text.format(
@@ -100,7 +111,7 @@ class Search:
 
 class SearchInput:
     @staticmethod
-    def take_genre_input():
+    def take_genre_input() -> str:
         print_long_hash()
         Color.print_bold_string(Constants.genre_selection_text)
         genre_options = Constants.genre
@@ -129,7 +140,7 @@ class SearchInput:
         return genre_options[g]
 
     @staticmethod
-    def take_order_input():
+    def take_order_input() -> str:
         print_long_hash()
         Color.print_bold_string(Constants.order_selection_text)
         order_options = Constants.order_by
@@ -157,7 +168,7 @@ class SearchInput:
             Color.print_colored_note(Constants.imdb_order_note)
         return order_options[o]
 
-    def create_query(self):
+    def create_query(self) -> SearchQuery:
         print_long_hash()
         s = input(Color.get_bold_string(Constants.search_string_text))
 
@@ -179,6 +190,19 @@ class SearchInput:
 
 
 def main():
+    print('{0}###########################################'.format(Color.DARK_CYAN))
+    print()
+    print('#     #  ######  #       #  #  #####  #####')
+    print('# # # #  #    #   #     #   #  #      #    ')
+    print('#  #  #  #    #    #   #    #  ###    #####')
+    print('#     #  #    #     # #     #  #          #')
+    print('#     #  ######      #      #  #####  #####')
+    print()
+    print('###########################################')
+    print('###                                    ####')
+    print(' Welcome to torrent search and downloader ')
+    print('###                                    ####')
+    print('###########################################{0}'.format(Color.END))
     try:
         search_input = SearchInput()
         search_query = search_input.create_query()
@@ -190,17 +214,4 @@ def main():
 
 
 if __name__ == '__main__':
-    print('{0}##########################################'.format(Color.DARK_CYAN))
-    print()
-    print('#     #  #####  #   #  #  #####  #####')
-    print('# # # #  #   #  #   #  #  #      #    ')
-    print('#  #  #  #   #  #   #  #  ###    #####')
-    print('#     #  #   #   # #   #  #          #')
-    print('#     #  #####    #    #  #####  #####')
-    print()
-    print('##########################################')
-    print('###                                    ###')
-    print(' Welcome to torrent search and downloader ')
-    print('###                                    ###')
-    print('##########################################{0}'.format(Color.END))
     main()

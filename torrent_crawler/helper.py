@@ -17,7 +17,7 @@ def get_yes_no():
 
 
 def print_long_hash():
-    print('##########################################')
+    print('###########################################')
 
 
 def update_progress(index, total):
