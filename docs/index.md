@@ -1,7 +1,7 @@
-    [![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)](https://www.djangoproject.com)
-    [![Open Issues](https://img.shields.io/github/issues-raw/rajat19/torrent-crawler.svg)](https://www.github.com/rajat19/torrent-crawler)
-    [![GitHub last commit](https://img.shields.io/github/last-commit/rajat19/torrent-crawler.svg)]()
-    [![License](https://img.shields.io/github/license/rajat19/torrent-crawler.svg)]()
+[![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)](https://www.djangoproject.com)
+[![Open Issues](https://img.shields.io/github/issues-raw/rajat19/torrent-crawler.svg)](https://www.github.com/rajat19/torrent-crawler)
+[![GitHub last commit](https://img.shields.io/github/last-commit/rajat19/torrent-crawler.svg)]()
+[![License](https://img.shields.io/github/license/rajat19/torrent-crawler.svg)]()
 ## Torrent Crawler and Search
 > Search for torrents using command line
 ```bash
