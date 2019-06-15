@@ -31,15 +31,15 @@ class Search:
 
     def get_available_torrents(self, torrents: Torrents) -> Dict:
         available_torrents = {}
-        if self.search_query.quality in ['all', '3D'] and 'br3d' in torrents:
+        if self.search_query.quality in ['all', '3D'] and torrents.br3d:
             available_torrents['3D.BluRay'] = torrents.br3d
-        if self.search_query.quality in ['all', '720'] and 'br720' in torrents:
+        if self.search_query.quality in ['all', '720'] and torrents.br720:
             available_torrents['720p.BluRay'] = torrents.br720
-        if self.search_query.quality in ['all', '1080'] and 'br1080' in torrents:
+        if self.search_query.quality in ['all', '1080'] and torrents.br1080:
             available_torrents['1080p.BluRay'] = torrents.br1080
-        if self.search_query.quality in ['all', '720'] and 'web720' in torrents:
-            available_torrents['720p.WEB'] = torrents.br720
-        if self.search_query.quality in ['all', '1080'] and 'web1080' in torrents:
+        if self.search_query.quality in ['all', '720'] and torrents.web720:
+            available_torrents['720p.WEB'] = torrents.web720
+        if self.search_query.quality in ['all', '1080'] and torrents.web1080:
             available_torrents['1080p.WEB'] = torrents.br1080
         return available_torrents
 

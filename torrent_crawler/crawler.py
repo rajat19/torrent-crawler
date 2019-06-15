@@ -25,11 +25,7 @@ class Ratings:
 
 class Torrents:
     def __init__(self):
-        self.br3d = ''
-        self.br720 = ''
-        self.br1080 = ''
-        self.web720 = ''
-        self.web1080 = ''
+        self.br3d, self.br720, self.br1080, self.web720, self.web1080 = [None] * 5
 
     def set_fields(self, torrents):
         if '3D.BluRay' in torrents:
