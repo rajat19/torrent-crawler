@@ -26,8 +26,9 @@ class SearchQuery:
 
 
 class Search:
-    def __init__(self, search_query: SearchQuery):
+    def __init__(self, search_query: SearchQuery, api_flag: bool = False):
         self.search_query = search_query
+        self.api_flag = api_flag
 
     def get_available_torrents(self, torrents: Torrents) -> Dict:
         available_torrents = {}
@@ -98,8 +99,10 @@ class Search:
     def start(self, search_query: SearchQuery):
         url = Constants.search_url.format(search_query.search_term, search_query.quality, search_query.genre,
                                           search_query.rating, search_query.order_by)
-        crawler = Crawler()
+        crawler = Crawler(api_flag=self.api_flag)
         movies = crawler.crawl_list(url)
+        if self.api_flag is True:
+            return movies
         self.show_movies(movies)
         print(Constants.restart_search_text)
         restart_search = input('{0}\n'.format(Color.get_colored_yes()))

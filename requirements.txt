@@ -1,2 +1,4 @@
 bs4
 requests
+flask
+html5lib

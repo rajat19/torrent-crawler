@@ -3,13 +3,14 @@
 from bs4 import BeautifulSoup
 import os
 import re
+import json
 import requests
 from typing import List
 from torrent_crawler.helper import update_progress
 
 
 class Ratings:
-    def __int__(self):
+    def __init__(self):
         self.rotten_tomatoes_critics = ''
         self.rotten_tomatoes_audience = ''
         self.imdb = ''
@@ -49,8 +50,8 @@ class Movie:
                    ' [3D.BluRay]({})|[720p.BluRay]({})|[1080p.BluRay]({})|[720p.WEB]({})|[1080p.WEB]({})'
     readme_created = True
 
-    def __init__(self, id, name, link, year):
-        self.id = id
+    def __init__(self, movie_id, name, link, year):
+        self.id = movie_id
         self.name = name
         self.link = link
         self.year = year
@@ -88,18 +89,24 @@ class Movie:
             self.torrents.web1080
         )
 
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
 
 MoviesList = List[Movie]
 
 
 class Crawler:
 
-    list_url = 'https://yts.am/browse-movies'
-    all_formats = []
-    id = 1
-    should_save_list = False
-    should_print_to_console = False
-    max_movies_in_page = 20
+    def __init__(self, api_flag=False, save_list=False, print_console=False):
+        self.api_flag = api_flag
+        self.list_url = 'https://yts.am/browse-movies'
+        self.all_formats = []
+        self.id = 1
+        self.should_save_list = save_list or False
+        self.should_print_to_console = print_console or False
+        self.max_movies_in_page = 20
+        self.update_progress = False if api_flag is True else True
 
     def crawl_list(self, crawl_url: str) -> MoviesList:
         page_no = 1
@@ -137,7 +144,8 @@ class Crawler:
                     print('{}: {}'.format(current_movie_count, movie_name))
                 if self.should_save_list:
                     movie.save_list()
-                update_progress(current_movie_count, movies_count)
+                if self.update_progress:
+                    update_progress(current_movie_count, movies_count)
                 current_movie_count += 1
             page_no += 1
         return movies
