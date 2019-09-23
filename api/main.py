@@ -1,8 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from torrent_crawler.search import Search, SearchQuery
 from torrent_crawler.constants import Constants
 import json
-from operator import attrgetter
 
 app = Flask(__name__)
 
@@ -25,7 +24,7 @@ def salvador():
     result = []
     for movie in movies:
         result.append(json.loads(movie.to_json()))
-    return json.dumps(result)
+    return json.dumps(result, indent=4)
 
 
 if __name__ == '__main__':
