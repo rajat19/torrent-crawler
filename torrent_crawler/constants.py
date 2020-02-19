@@ -5,7 +5,7 @@ class Constants:
              'family', 'fantasy', 'film-noir', 'game-show', 'history', 'horror', 'music', 'musical', 'mystery',
              'news', 'reality-tv', 'romance', 'sci-fi', 'sport', 'talk-show', 'thriller', 'war', 'western']
     order_by = ['rating', 'seeds', 'peers', 'year', 'likes', 'alphabetical', 'downloads']
-    search_url = 'https://yts.am/browse-movies/{0}/{1}/{2}/{3}/{4}'
+    search_url = 'https://yts.mx/browse-movies/{0}/{1}/{2}/{3}/{4}'
 
     # subtitle search constants
     subtitle_base_url = 'http://www.yifysubtitles.com/{0}'
