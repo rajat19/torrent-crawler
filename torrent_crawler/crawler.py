@@ -122,6 +122,7 @@ class Crawler:
                 request_url = '{0}?page={1}'.format(crawl_url, page_no)
             req = requests.get(request_url)
             soup = BeautifulSoup(req.text, features='html5lib')
+            print('response from yts:: ', soup)
             if page_no == 1:
                 movies_count_text = soup.find('div', {'class': 'browse-content'}).find('h2').text
                 movies_count_text = movies_count_text.replace(',', '')
