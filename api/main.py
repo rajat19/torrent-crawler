@@ -21,11 +21,26 @@ def salvador():
     search_query = SearchQuery(search_string, quality, genre, rating, order_by)
     search = Search(search_query, True)
     movies = search.start(search_query)
-    result = []
-    for movie in movies:
-        result.append(json.loads(movie.to_json()))
-    return json.dumps(result, indent=4)
+    result = [json.loads(movie.to_json()) for movie in movies]
+    count = len(result)
+    if count == 0:
+        message = 'No movies found'
+    elif count == 1:
+        message = 'Only 1 movie found'
+    else:
+        message = 'Total {count} movies found'.format(count=count)
+    data = {
+        'count': count,
+        'message': message,
+        'result': result
+    }
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

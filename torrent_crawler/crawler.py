@@ -125,7 +125,7 @@ class Crawler:
             if page_no == 1:
                 movies_count_text = soup.find('div', {'class': 'browse-content'}).find('h2').text
                 movies_count_text = movies_count_text.replace(',', '')
-                movies_count = re.match(r'(\d+) YIFY Movies Found', movies_count_text).group(1)
+                movies_count = re.match(r'(\d+) YIFY Movies found', movies_count_text).group(1)
                 movies_count = int(movies_count)
                 print('Total {} movies found'.format(movies_count))
             movie_wraps = soup.find_all('div', {'class': 'browse-movie-wrap'})
