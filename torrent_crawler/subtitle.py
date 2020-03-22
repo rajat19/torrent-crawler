@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 from torrent_crawler.color import Color
 from torrent_crawler.constants import Constants
-from torrent_crawler.helper import download_srt, print_wrong_option
+from torrent_crawler.helper import download_srt
+from torrent_crawler.print import Print
 
 
 class Subtitle:
@@ -50,15 +51,15 @@ class Subtitle:
 
     @staticmethod
     def take_language_input(languages):
-        Color.print_bold_string(Constants.subtitle_language_text)
+        Print.print_bold_string(Constants.subtitle_language_text)
         for i in range(len(languages)):
-            print('{0}{1}: {2}{3}'.format(Color.YELLOW, i+1, languages[i], Color.END))
+            Print.print_option(i+1, languages[i])
         while True:
             lang = int(input())
             if 1 <= lang <= len(languages):
                 break
             else:
-                print_wrong_option()
+                Print.print_wrong_option()
                 continue
         return languages[lang-1]
 

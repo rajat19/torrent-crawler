@@ -3,13 +3,15 @@ import traceback
 from typing import Dict, List
 from torrent_crawler.constants import Constants
 from torrent_crawler.color import Color
-from torrent_crawler.crawler import Crawler, Movie, Torrents
-from torrent_crawler.helper import open_magnet_link, print_wrong_option, get_yes_no, print_long_hash
+from torrent_crawler.crawler import Crawler
+from torrent_crawler.helper import open_magnet_link
+from torrent_crawler.models import Movie, Torrents
+from torrent_crawler.print import Print
 from torrent_crawler.subtitle import Subtitle
 
 
 def sigint_handler(signum, frame):
-    print('\n{0}{1}{2}'.format(Color.BLUE, Constants.thanks_text, Color.END))
+    Print.print_thanks()
     exit(1)
 
 
@@ -54,12 +56,12 @@ class Search:
         while True:
             mid = int(input(Color.get_bold_string(Constants.movie_download_text)))
             if mid > len(movies) or mid < 1:
-                print_wrong_option()
+                Print.print_wrong_option()
                 continue
             else:
                 break
         movie_selected = movies[mid - 1]
-        Color.print_bold_string(Constants.available_torrents_text)
+        Print.print_bold_string(Constants.available_torrents_text)
 
         available_torrents = self.get_available_torrents(movie_selected.torrents)
         if len(available_torrents.values()) == 0:
@@ -73,26 +75,26 @@ class Search:
                 op = input('Press 1 to Download, Press any other key to exit\n')
                 if op == '1':
                     torrent_link = list(available_torrents.values())[0]
-                    Color.print_bold_string('{0}{1}{2}{3}'.format(
+                    Print.print_bold_string('{0}{1}{2}{3}'.format(
                         Constants.click_link_text, Color.RED, torrent_link, Color.END))
             else:
-                Color.print_bold_string(Constants.movie_quality_text)
+                Print.print_bold_string(Constants.movie_quality_text)
                 qu = int(input())
                 torrent_link = list(available_torrents.values())[qu - 1]
                 open_magnet_link(torrent_link)
-                Color.print_bold_string('{0}{1}{2}{3}'.format(
+                Print.print_bold_string('{0}{1}{2}{3}'.format(
                     Constants.click_link_text, Color.RED, torrent_link, Color.END))
-            print_long_hash()
-            Color.print_bold_string(Constants.subtitles_selection_text)
-            download_subtitle = input(get_yes_no())
+            Print.print_long_hash()
+            Print.print_bold_string(Constants.subtitles_selection_text)
+            download_subtitle = input(Color.get_yes_no())
             if download_subtitle == 'y' or download_subtitle == 'Y':
                 subtitle = Subtitle()
                 subtitle.search_subtitle(movie_selected.subtitle_url)
 
-            print_long_hash()
+            Print.print_long_hash()
             print(Constants.another_movies_text.format(
                 Color.RED, Color.get_bold_string(self.search_query.search_term)))
-            reshow_movies = input(get_yes_no())
+            reshow_movies = input(Color.get_yes_no())
             if reshow_movies == 'y' or reshow_movies == 'Y':
                 self.show_movies(movies)
 
@@ -113,66 +115,49 @@ class Search:
 
 
 class SearchInput:
-    @staticmethod
-    def take_genre_input() -> str:
-        print_long_hash()
-        Color.print_bold_string(Constants.genre_selection_text)
-        genre_options = Constants.genre
-        while True:
-            want_genre = input(get_yes_no())
-            if want_genre not in ['y', 'Y', 'n', 'N']:
-                print_wrong_option()
-                continue
-            else:
-                break
-        g = 0
-        if want_genre == 'y' or want_genre == 'Y':
-            Color.print_bold_string(Constants.specific_genre_text)
-            for i in range(1, len(genre_options)):
-                print('{0}{1}: {2}{3}'.format(Color.YELLOW, i, genre_options[i], Color.END))
+    def take_optional_input(self, input_type):
+        Print.print_long_hash()
+        if input_type not in Constants.input_types:
+            Print.print_bold_string('Wrong input type: {0}'.format(input_type))
+            exit(1)
+        selection_text = Constants.selection_text[input_type]
+        specific_text = Constants.specific_text[input_type]
+        specific_final_option = Constants.specific_final_option[input_type]
+        special_final_option = Constants.special_final_option[input_type]
+        Print.print_bold_string(selection_text)
+        want = self.ask_for_input()
+        index = 0
+        options = Constants.options[input_type]
+        option_length = len(options)
+        if want:
+            Print.print_bold_string(specific_text)
+            for i in range(1, len(options)):
+                Print.print_option(i, options[i])
             while True:
-                g = int(input())
-                if 1 <= g <= 27:
+                index = int(input())
+                if 1 <= index <= option_length:
                     break
                 else:
-                    print_wrong_option()
+                    Print.print_wrong_option()
                     continue
-            Color.print_colored_note(Constants.specific_genre_note.format(genre_options[g]))
+            Print.print_colored_note(specific_final_option.format(options[index]))
         else:
-            Color.print_colored_note(Constants.all_genre_note)
-        return genre_options[g]
+            Print.print_colored_note(special_final_option)
+        return options[index]
 
     @staticmethod
-    def take_order_input() -> str:
-        print_long_hash()
-        Color.print_bold_string(Constants.order_selection_text)
-        order_options = Constants.order_by
+    def ask_for_input() -> bool:
         while True:
-            want_order = input(get_yes_no())
-            if want_order not in ['y', 'Y', 'n', 'N']:
-                print_wrong_option()
-                continue
-            else:
-                break
-        o = 0
-        if want_order == 'y' or want_order == 'Y':
-            Color.print_bold_string(Constants.specific_order_text)
-            for i in range(1, len(order_options)):
-                print('{0}{1}: {2}{3}'.format(Color.YELLOW, i, order_options[i], Color.END))
-            while True:
-                o = int(input())
-                if o > 6 or o < 1:
-                    print_wrong_option()
-                    continue
-                else:
-                    break
-            Color.print_colored_note(Constants.specific_order_note.format(order_options[0]))
-        else:
-            Color.print_colored_note(Constants.imdb_order_note)
-        return order_options[o]
+            want = input(Color.get_yes_no())
+            if want in ['y', 'Y']:
+                return True
+            if want in ['n', 'N']:
+                return False
+            Print.print_wrong_option()
+            continue
 
     def create_query(self) -> SearchQuery:
-        print_long_hash()
+        Print.print_long_hash()
         s = input(Color.get_bold_string(Constants.search_string_text))
 
         q = 'all'
@@ -186,8 +171,8 @@ class SearchInput:
             print('Wrong option, Try again')
         q = quality_options[q]
         """
-        g = self.take_genre_input()
-        o = self.take_order_input()
+        g = self.take_optional_input('genre')
+        o = self.take_optional_input('order')
 
         return SearchQuery(s, q, g, 0, o)
 

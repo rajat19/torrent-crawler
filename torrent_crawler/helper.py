@@ -6,18 +6,7 @@ import subprocess
 import zipfile
 from torrent_crawler.color import Color
 from torrent_crawler.constants import Constants
-
-
-def print_wrong_option():
-    print(Constants.wrong_option_text)
-
-
-def get_yes_no():
-    return '{0}\n{1}\n'.format(Color.get_colored_yes(), Color.get_colored_no())
-
-
-def print_long_hash():
-    print('###########################################')
+from torrent_crawler.print import Print
 
 
 def update_progress(index, total):
@@ -78,7 +67,7 @@ def download_srt(url):
     """Downloads and extracts .srt file from zip url"""
     my_zip = get_zip_file(url)
     storage_path = get_downloads_folder()
-    Color.print_bold_string(Constants.download_zip_text.format(Color.RED, storage_path, url))
+    Print.print_bold_string(Constants.download_zip_text.format(Color.RED, storage_path, url))
     for file in my_zip.namelist():
         if my_zip.getinfo(file).filename.endswith('.srt'):
             my_zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
