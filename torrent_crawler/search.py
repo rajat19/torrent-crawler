@@ -11,7 +11,7 @@ from torrent_crawler.subtitle import Subtitle
 
 
 def sigint_handler(signum, frame):
-    Print.print_thanks()
+    Print.thanks()
     exit(1)
 
 
@@ -56,12 +56,12 @@ class Search:
         while True:
             mid = int(input(Color.get_bold_string(Constants.movie_download_text)))
             if mid > len(movies) or mid < 1:
-                Print.print_wrong_option()
+                Print.wrong_option()
                 continue
             else:
                 break
         movie_selected = movies[mid - 1]
-        Print.print_bold_string(Constants.available_torrents_text)
+        Print.bold_string(Constants.available_torrents_text)
 
         available_torrents = self.get_available_torrents(movie_selected.torrents)
         if len(available_torrents.values()) == 0:
@@ -75,22 +75,22 @@ class Search:
                 op = input('Press 1 to Download, Press any other key to exit\n')
                 if op == '1':
                     torrent_link = list(available_torrents.values())[0]
-                    Print.print_bold_string('{0}{1}{2}{3}'.format(
+                    Print.bold_string('{0}{1}{2}{3}'.format(
                         Constants.click_link_text, Color.RED, torrent_link, Color.END))
             else:
-                Print.print_bold_string(Constants.movie_quality_text)
+                Print.bold_string(Constants.movie_quality_text)
                 qu = int(input())
                 torrent_link = list(available_torrents.values())[qu - 1]
                 Helper.open_magnet_link(torrent_link)
-                Print.print_bold_string('{0}{1}{2}{3}'.format(
+                Print.bold_string('{0}{1}{2}{3}'.format(
                     Constants.click_link_text, Color.RED, torrent_link, Color.END))
-            Print.print_long_hash()
-            Print.print_bold_string(Constants.selection_text['subtitle'])
+            Print.long_hash()
+            Print.bold_string(Constants.selection_text['subtitle'])
             download_subtitle = Helper.ask_for_options()
             if download_subtitle:
                 subtitle = Subtitle()
                 subtitle.search_subtitle(movie_selected.subtitle_url)
-            Print.print_long_hash()
+            Print.long_hash()
             print(Constants.another_movies_text.format(
                 Color.RED, Color.get_bold_string(self.search_query.search_term)))
             reshow_movies = input(Color.get_yes_no())
@@ -116,7 +116,7 @@ class Search:
 class SearchInput:
     @staticmethod
     def create_query() -> SearchQuery:
-        Print.print_long_hash()
+        Print.long_hash()
         s = input(Color.get_bold_string(Constants.search_string_text))
 
         q = 'all'

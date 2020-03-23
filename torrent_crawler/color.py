@@ -23,5 +23,5 @@ class Color:
         return '{0}n: No{1}'.format(Color.RED, Color.END)
 
     @staticmethod
-    def get_yes_no():
+    def get_yes_no() -> str:
         return '{0}\n{1}\n'.format(Color.get_colored_yes(), Color.get_colored_no())

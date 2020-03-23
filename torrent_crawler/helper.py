@@ -18,46 +18,46 @@ class Helper:
                 return True
             if want in ['n', 'N']:
                 return False
-            Print.print_wrong_option()
+            Print.wrong_option()
             continue
 
     @staticmethod
     def take_input(input_type, options):
         if input_type not in Constants.input_types:
-            Print.print_bold_string('Wrong input type: {0}'.format(input_type))
+            Print.bold_string('Wrong input type: {0}'.format(input_type))
             exit(1)
         specific_text = Constants.specific_text[input_type]
         no_of_options = len(options)
-        Print.print_bold_string(specific_text)
+        Print.bold_string(specific_text)
         for i in range(1, len(options)):
-            Print.print_option(i, options[i])
+            Print.option(i, options[i])
         while True:
             index = int(input())
             if 1 <= index <= no_of_options:
                 break
             else:
-                Print.print_wrong_option()
+                Print.wrong_option()
                 continue
         return options[index-1]
 
     @staticmethod
     def take_optional_input(input_type):
-        Print.print_long_hash()
+        Print.long_hash()
         if input_type not in Constants.input_types:
-            Print.print_bold_string('Wrong input type: {0}'.format(input_type))
+            Print.bold_string('Wrong input type: {0}'.format(input_type))
             exit(1)
         selection_text = Constants.selection_text[input_type]
         specific_final_option = Constants.specific_final_option[input_type]
         special_final_option = Constants.special_final_option[input_type]
-        Print.print_bold_string(selection_text)
+        Print.bold_string(selection_text)
         want = Helper.ask_for_options()
         index = 0
         options = Constants.options[input_type]
         if not want:
-            Print.print_colored_note(special_final_option)
+            Print.colored_note(special_final_option)
             return options[0]
         final_option = Helper.take_input(options)
-        Print.print_colored_note(specific_final_option.format(options[index]))
+        Print.colored_note(specific_final_option.format(options[index]))
         return final_option
 
     @staticmethod
@@ -119,7 +119,7 @@ class Helper:
         """Downloads and extracts .srt file from zip url"""
         my_zip = Helper.__get_zip_file(url)
         storage_path = Helper.__get_downloads_folder()
-        Print.print_bold_string(Constants.download_zip_text.format(Color.RED, storage_path, url))
+        Print.bold_string(Constants.download_zip_text.format(Color.RED, storage_path, url))
         for file in my_zip.namelist():
             if my_zip.getinfo(file).filename.endswith('.srt'):
                 my_zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
