@@ -1,6 +1,6 @@
 class Constants:
     # movie search constants
-    input_types = ['genre', 'order']
+    input_types = ['genre', 'order', 'subtitle']
     options = {
         'quality': ['all', '720p', '1080p', '3D'],
         'genre': ['all', 'action', 'adventure', 'animation', 'biography', 'comedy', 'crime', 'documentary', 'drama',
@@ -30,6 +30,7 @@ class Constants:
     selection_text = {
         'genre': 'Do you want to search some specific genre: ',
         'order': 'Do you want any specific order by which movies should be sorted',
+        'subtitle': 'Download subtitles for this movie'
     }
     specific_text = {
         'genre': 'Please enter any specific genre of your torrent: ',
@@ -52,8 +53,6 @@ class Constants:
     click_link_text = 'Torrent link will open automatically, If not then Click this link: '
     restart_search_text = 'Do you want to start searching again'
     thanks_text = 'Thanks for using torrent-search . Keep Seeding'
-    subtitles_selection_text = 'Download subtitles for this movie'
-    subtitle_language_text = 'Select language to get subtitles: '
     download_zip_text = 'Subtitle would be downloaded in {0}{1}. Please check there.'
     another_movies_text = 'Do you want to download another {0}{1} movie'
 

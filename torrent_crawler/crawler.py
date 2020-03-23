@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import re
 import requests
 from typing import List
-from torrent_crawler.helper import update_progress
+from torrent_crawler.helper import Helper
 from torrent_crawler.models import Movie
 
 
@@ -60,7 +60,7 @@ class Crawler:
                 if self.should_save_list:
                     movie.save_list()
                 if self.update_progress:
-                    update_progress(current_movie_count, movies_count)
+                    Helper.update_progress(current_movie_count, movies_count)
                 current_movie_count += 1
             page_no += 1
         return movies

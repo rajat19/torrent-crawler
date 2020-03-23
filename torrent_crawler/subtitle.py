@@ -1,9 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
-from torrent_crawler.color import Color
 from torrent_crawler.constants import Constants
-from torrent_crawler.helper import download_srt
-from torrent_crawler.print import Print
+from torrent_crawler.helper import Helper
 
 
 class Subtitle:
@@ -49,26 +47,12 @@ class Subtitle:
             })
         return subtitles
 
-    @staticmethod
-    def take_language_input(languages):
-        Print.print_bold_string(Constants.subtitle_language_text)
-        for i in range(len(languages)):
-            Print.print_option(i+1, languages[i])
-        while True:
-            lang = int(input())
-            if 1 <= lang <= len(languages):
-                break
-            else:
-                Print.print_wrong_option()
-                continue
-        return languages[lang-1]
-
     def search_subtitle(self, url):
         subtitles = self.crawl_movie(url)
-        lang = self.take_language_input(list(subtitles.keys()))
+        lang = Helper.take_input('subtitle', list(subtitles.keys()))
         # Download first subtitle for that language as it is highest rated
         subtitle_link = subtitles[lang][0]['link']
-        download_srt(subtitle_link)
+        Helper.download_srt(subtitle_link)
 
 
 if __name__ == '__main__':

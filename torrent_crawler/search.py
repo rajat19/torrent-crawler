@@ -4,7 +4,7 @@ from typing import Dict, List
 from torrent_crawler.constants import Constants
 from torrent_crawler.color import Color
 from torrent_crawler.crawler import Crawler
-from torrent_crawler.helper import open_magnet_link
+from torrent_crawler.helper import Helper
 from torrent_crawler.models import Movie, Torrents
 from torrent_crawler.print import Print
 from torrent_crawler.subtitle import Subtitle
@@ -81,16 +81,15 @@ class Search:
                 Print.print_bold_string(Constants.movie_quality_text)
                 qu = int(input())
                 torrent_link = list(available_torrents.values())[qu - 1]
-                open_magnet_link(torrent_link)
+                Helper.open_magnet_link(torrent_link)
                 Print.print_bold_string('{0}{1}{2}{3}'.format(
                     Constants.click_link_text, Color.RED, torrent_link, Color.END))
             Print.print_long_hash()
-            Print.print_bold_string(Constants.subtitles_selection_text)
-            download_subtitle = input(Color.get_yes_no())
-            if download_subtitle == 'y' or download_subtitle == 'Y':
+            Print.print_bold_string(Constants.selection_text['subtitle'])
+            download_subtitle = Helper.ask_for_options()
+            if download_subtitle:
                 subtitle = Subtitle()
                 subtitle.search_subtitle(movie_selected.subtitle_url)
-
             Print.print_long_hash()
             print(Constants.another_movies_text.format(
                 Color.RED, Color.get_bold_string(self.search_query.search_term)))
@@ -115,48 +114,8 @@ class Search:
 
 
 class SearchInput:
-    def take_optional_input(self, input_type):
-        Print.print_long_hash()
-        if input_type not in Constants.input_types:
-            Print.print_bold_string('Wrong input type: {0}'.format(input_type))
-            exit(1)
-        selection_text = Constants.selection_text[input_type]
-        specific_text = Constants.specific_text[input_type]
-        specific_final_option = Constants.specific_final_option[input_type]
-        special_final_option = Constants.special_final_option[input_type]
-        Print.print_bold_string(selection_text)
-        want = self.ask_for_input()
-        index = 0
-        options = Constants.options[input_type]
-        option_length = len(options)
-        if want:
-            Print.print_bold_string(specific_text)
-            for i in range(1, len(options)):
-                Print.print_option(i, options[i])
-            while True:
-                index = int(input())
-                if 1 <= index <= option_length:
-                    break
-                else:
-                    Print.print_wrong_option()
-                    continue
-            Print.print_colored_note(specific_final_option.format(options[index]))
-        else:
-            Print.print_colored_note(special_final_option)
-        return options[index]
-
     @staticmethod
-    def ask_for_input() -> bool:
-        while True:
-            want = input(Color.get_yes_no())
-            if want in ['y', 'Y']:
-                return True
-            if want in ['n', 'N']:
-                return False
-            Print.print_wrong_option()
-            continue
-
-    def create_query(self) -> SearchQuery:
+    def create_query() -> SearchQuery:
         Print.print_long_hash()
         s = input(Color.get_bold_string(Constants.search_string_text))
 
@@ -171,8 +130,8 @@ class SearchInput:
             print('Wrong option, Try again')
         q = quality_options[q]
         """
-        g = self.take_optional_input('genre')
-        o = self.take_optional_input('order')
+        g = Helper.take_optional_input('genre')
+        o = Helper.take_optional_input('order')
 
         return SearchQuery(s, q, g, 0, o)
 
@@ -192,8 +151,7 @@ def main():
     print('###                                    ####')
     print('###########################################{0}'.format(Color.END))
     try:
-        search_input = SearchInput()
-        search_query = search_input.create_query()
+        search_query = SearchInput.create_query()
         search = Search(search_query)
         search.start(search_query)
     except Exception as e:
