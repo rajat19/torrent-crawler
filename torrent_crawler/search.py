@@ -19,12 +19,18 @@ signal.signal(signal.SIGINT, sigint_handler)
 
 
 class SearchQuery:
-    def __init__(self, search_term, quality, genre, rating, order_by):
+    def __init__(self, search_term, quality, genre, rating, order_by, year=0, language='en'):
         self.search_term = search_term
         self.quality = quality
         self.genre = genre
         self.rating = rating
         self.order_by = order_by
+        self.language = language
+        self.year = year
+
+    def get_url(self):
+        return Constants.search_url.format(self.search_term, self.quality, self.genre,
+                                           self.rating, self.order_by, self.year, self.language)
 
 
 class Search:
@@ -85,12 +91,13 @@ class Search:
                 Print.bold_string('{0}{1}{2}{3}'.format(
                     Constants.click_link_text, Color.RED, torrent_link, Color.END))
             Print.long_hash()
-            Print.bold_string(Constants.selection_text['subtitle'])
-            download_subtitle = Helper.ask_for_options()
-            if download_subtitle:
-                subtitle = Subtitle()
-                subtitle.search_subtitle(movie_selected.subtitle_url)
-            Print.long_hash()
+            if movie_selected.subtitle_url and movie_selected.subtitle_url != '':
+                Print.bold_string(Constants.selection_text['subtitle'])
+                download_subtitle = Helper.ask_for_options()
+                if download_subtitle:
+                    subtitle = Subtitle()
+                    subtitle.search_subtitle(movie_selected.subtitle_url)
+                Print.long_hash()
             print(Constants.another_movies_text.format(
                 Color.RED, Color.get_bold_string(self.search_query.search_term)))
             reshow_movies = input(Color.get_yes_no())
@@ -98,8 +105,7 @@ class Search:
                 self.show_movies(movies)
 
     def start(self, search_query: SearchQuery):
-        url = Constants.search_url.format(search_query.search_term, search_query.quality, search_query.genre,
-                                          search_query.rating, search_query.order_by)
+        url = search_query.get_url()
         crawler = Crawler(api_flag=self.api_flag)
         movies = crawler.crawl_list(url)
         if self.api_flag is True:
@@ -133,7 +139,7 @@ class SearchInput:
         g = Helper.take_optional_input('genre')
         o = Helper.take_optional_input('order')
 
-        return SearchQuery(s, q, g, 0, o)
+        return SearchQuery(s, q, g, 0, o, 0, 'all')
 
 
 def main():
@@ -152,6 +158,7 @@ def main():
     print('###########################################{0}'.format(Color.END))
     try:
         search_query = SearchInput.create_query()
+        # search_query = SearchQuery('avengers', 'all', 'all', 0, 'latest', 0, 'all')
         search = Search(search_query)
         search.start(search_query)
     except Exception as e:

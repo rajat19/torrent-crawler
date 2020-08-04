@@ -8,7 +8,7 @@ class Constants:
                   'news', 'reality-tv', 'romance', 'sci-fi', 'sport', 'talk-show', 'thriller', 'war', 'western'],
         'order': ['rating', 'seeds', 'peers', 'year', 'likes', 'alphabetical', 'downloads']
     }
-    search_url = 'https://yts.mx/browse-movies/{0}/{1}/{2}/{3}/{4}'
+    search_url = 'https://yts.mx/browse-movies/{0}/{1}/{2}/{3}/{4}/{5}/{6}'
 
     # yts constants
     rotten_tomatoes_critics_rating = 'Rotten Tomatoes Critics - Certified Fresh'
@@ -21,9 +21,9 @@ class Constants:
     web_720p = '720p.WEB'
 
     # subtitle search constants
-    subtitle_base_url = 'http://www.yifysubtitles.com/{0}'
-    subtitle_search_url = 'http://www.yifysubtitles.com/search?q={0}'
-    subtitle_movie_url = 'http://www.yifysubtitles.com/movie-imdb/{0}'
+    subtitle_base_url = 'http://www.yifysubtitles.org/{0}'
+    subtitle_search_url = 'http://www.yifysubtitles.org/search?q={0}'
+    subtitle_movie_url = 'http://www.yifysubtitles.org/movie-imdb/{0}'
 
     # texts
     search_string_text = 'Please enter search string: '

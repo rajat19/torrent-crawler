@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name='search-torrent',
     description='Search for torrents using command line',
-    version='1.2.5',
+    version='1.3.0',
     url='http://github.com/rajat19/torrent-crawler',
     download_url='https://github.com/rajat19/torrent-crawler/releases',
     author='Rajat Srivastava',
@@ -29,5 +29,6 @@ setup(
     install_requires=[
         'bs4',
         'requests',
+        'html5lib'
     ]
 )
