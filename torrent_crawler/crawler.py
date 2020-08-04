@@ -36,7 +36,6 @@ class Crawler:
                 request_url = '{0}?page={1}'.format(crawl_url, page_no)
             req = requests.get(request_url)
             soup = BeautifulSoup(req.text, features='html5lib')
-            print('response from yts:: ', soup)
             if page_no == 1:
                 movies_count_text = soup.find('div', {'class': 'browse-content'}).find('h2').text
                 movies_count_text = movies_count_text.replace(',', '')
@@ -78,13 +77,14 @@ class Crawler:
                 torrent_quality = torrent.text
                 if torrent_link and torrent_quality:
                     torrent_list[torrent_quality] = torrent_link
-            movie_ratings = movie_info.find('div', {'class': 'bottom-info'}).find_all('div', {'class': 'rating-row'})
+            movie_ratings = movie_info.find('div', {'class': 'bottom-info'}).find_all('div', {'itemprop': 'aggregateRating'})
             rating_list = {}
             for rating in movie_ratings:
                 rating_link = rating.find('a')
                 if rating_link:
                     rater = rating_link.get('title')
-                    rating_given = rating.find('span').text
+                    r = rating.find('span', {'itemprop': 'ratingValue'})
+                    rating_given = rating.find('span', {'itemprop': 'ratingValue'}).text
                     if rater and rating_given:
                         rating_list[rater] = rating_given
             movie.set_torrents(torrent_list)
@@ -94,7 +94,10 @@ class Crawler:
         movie_tech_specs = soup.find('div', {'id': 'movie-tech-specs'})
         if movie_tech_specs:
             tech_spec = movie_tech_specs.find('div', {'class': 'tech-spec-info'})
-            movie.subtitle_url = tech_spec.find('a').get('href')
+            x = tech_spec.find('span', {'title': 'Subtitles'})
+            subtitle_url = tech_spec.find('a')
+            if subtitle_url:
+                movie.subtitle_url = subtitle_url.get('href')
         return movie
 
 
@@ -102,7 +105,7 @@ if __name__ == "__main__":
     crawler = Crawler()
     crawler.should_save_list = False
     crawler.should_print_to_console = True
-    movies_list = crawler.crawl_list('https://yts.am/browse-movies/american/all/all/0/latest')
+    movies_list = crawler.crawl_list('https://yts.mx/browse-movies/avenger/all/all/0/latest/0/all')
     # complete_list = []
     # for movie in movies_list:
     #     complete_list.append(crawler.crawl_movie(movie['link'], movie))

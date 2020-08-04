@@ -29,5 +29,6 @@ setup(
     install_requires=[
         'bs4',
         'requests',
+        'html5lib'
     ]
 )
