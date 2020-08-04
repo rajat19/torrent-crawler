@@ -94,7 +94,6 @@ class Crawler:
         movie_tech_specs = soup.find('div', {'id': 'movie-tech-specs'})
         if movie_tech_specs:
             tech_spec = movie_tech_specs.find('div', {'class': 'tech-spec-info'})
-            x = tech_spec.find('span', {'title': 'Subtitles'})
             subtitle_url = tech_spec.find('a')
             if subtitle_url:
                 movie.subtitle_url = subtitle_url.get('href')

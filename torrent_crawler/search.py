@@ -157,8 +157,8 @@ def main():
     print('###                                    ####')
     print('###########################################{0}'.format(Color.END))
     try:
-        # search_query = SearchInput.create_query()
-        search_query = SearchQuery('avengers', 'all', 'all', 0, 'latest', 0, 'all')
+        search_query = SearchInput.create_query()
+        # search_query = SearchQuery('avengers', 'all', 'all', 0, 'latest', 0, 'all')
         search = Search(search_query)
         search.start(search_query)
     except Exception as e:
