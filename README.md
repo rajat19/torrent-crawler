@@ -14,7 +14,7 @@ search-torrent
 python app.py
 ```
 
-<p align="center"><img src="img/search-torrent-colorized.gif?raw=true"/></p>
+<p align="center"><img src="https://github.com/rajat19/torrent-crawler/blob/master/img/search-torrent-colorized.gif?raw=true"/></p>
 
 ---
 ### Contributing
