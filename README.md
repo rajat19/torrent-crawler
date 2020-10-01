@@ -4,13 +4,13 @@
 [![License](https://img.shields.io/github/license/rajat19/torrent-crawler.svg)]()
 ## Torrent Crawler
 > Search for torrents using CLI
-```shell script
+```bash
 pip3 install search-torrent
 search-torrent
 ```
 
 > Use api to get data (movies and subtitles)
-```shell script
+```bash
 python app.py
 ```
 
@@ -18,7 +18,7 @@ python app.py
 
 ---
 ### Contributing
-```shell script
+```bash
 git clone https://github.com/rajat19/torrent-search.git
 cd torrent-search
 pip install -r requirements.txt
