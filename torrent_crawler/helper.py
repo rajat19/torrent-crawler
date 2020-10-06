@@ -89,11 +89,9 @@ class Helper:
         if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
             os.startfile(magnet)
         elif sys.platform.startswith('darwin'):
-            subprocess.Popen(['open', magnet],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.Popen(['open', magnet], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
-            subprocess.Popen(['xdg-open', magnet],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.Popen(['xdg-open', magnet], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     @staticmethod
     def __get_downloads_folder():
@@ -105,8 +103,7 @@ class Helper:
             with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
                 location = winreg.QueryValueEx(key, downloads_guid)[0]
             return location
-        else:
-            return os.path.join(os.path.expanduser('~'), 'Downloads', 'subtitles')
+        return os.path.join(os.path.expanduser('~'), 'Downloads', 'subtitles')
 
     @staticmethod
     def __get_zip_file(url):

@@ -1,0 +1,2 @@
+[bandit]
+skips: B606,B607
