@@ -2,12 +2,13 @@ class Constants:
     # movie search constants
     input_types = ['genre', 'order', 'subtitle']
     options = {
-        'quality': ['all', '720p', '1080p', '3D'],
+        'quality': ['all', '720p', '1080p', '2160p', '3D'],
         'genre': ['all', 'action', 'adventure', 'animation', 'biography', 'comedy', 'crime', 'documentary', 'drama',
                   'family', 'fantasy', 'film-noir', 'game-show', 'history', 'horror', 'music', 'musical', 'mystery',
                   'news', 'reality-tv', 'romance', 'sci-fi', 'sport', 'talk-show', 'thriller', 'war', 'western'],
-        'order': ['rating', 'seeds', 'peers', 'year', 'likes', 'alphabetical', 'downloads']
+        'order': ['latest', 'oldest', 'seeds', 'peers', 'year', 'rating', 'likes', 'alphabetical', 'downloads']
     }
+    list_url = 'https://yts.mx/browse-movies'
     search_url = 'https://yts.mx/browse-movies/{0}/{1}/{2}/{3}/{4}/{5}/{6}'
 
     # yts constants
@@ -45,6 +46,7 @@ class Constants:
         'genre': 'Movies would be crawled for all genre',
         'order': 'Movies would be downloaded by IMDB rating'
     }
+    choose_option_text = 'Choose an option: '
     wrong_option_text = 'Wrong option, Try again'
     movie_download_text = 'Enter movie to download: '
     available_torrents_text = 'Available torrents: '
