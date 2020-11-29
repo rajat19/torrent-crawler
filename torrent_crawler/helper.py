@@ -22,7 +22,23 @@ class Helper:
             continue
 
     @staticmethod
-    def take_input(input_type, options):
+    def take_int_input(no_of_options) -> int:
+        index = None
+        while True:
+            try:
+                index = int(input(Color.get_bold_string(Constants.choose_option_text)))
+                if 1 <= index <= no_of_options:
+                    break
+                else:
+                    Print.wrong_option()
+                    continue
+            except ValueError:
+                Print.wrong_option()
+                continue
+        return index
+
+    @staticmethod
+    def take_input(input_type, options) -> int:
         if input_type not in Constants.input_types:
             Print.bold_string('Wrong input type: {0}'.format(input_type))
             exit(1)
@@ -31,14 +47,8 @@ class Helper:
         Print.bold_string(specific_text)
         for i in range(1, len(options)):
             Print.option(i, options[i])
-        while True:
-            index = int(input())
-            if 1 <= index <= no_of_options:
-                break
-            else:
-                Print.wrong_option()
-                continue
-        return options[index-1]
+        index = Helper.take_int_input(no_of_options)
+        return options[index]
 
     @staticmethod
     def take_optional_input(input_type):
@@ -51,13 +61,12 @@ class Helper:
         special_final_option = Constants.special_final_option[input_type]
         Print.bold_string(selection_text)
         want = Helper.ask_for_options()
-        index = 0
         options = Constants.options[input_type]
         if not want:
             Print.colored_note(special_final_option)
             return options[0]
-        final_option = Helper.take_input(options)
-        Print.colored_note(specific_final_option.format(options[index]))
+        final_option = Helper.take_input(input_type, options)
+        Print.colored_note(specific_final_option.format(final_option))
         return final_option
 
     @staticmethod

@@ -11,7 +11,7 @@ class Color:
     END = '\033[0m'
 
     @staticmethod
-    def get_bold_string(string) -> str:
+    def get_bold_string(string: str) -> str:
         return '{0}{1}{2}'.format(Color.BOLD, string, Color.END)
 
     @staticmethod

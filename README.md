@@ -13,13 +13,13 @@ An easy way to get your favourite movie torrents. Try it now !!
 
 > Search for torrents using CLI
 ```bash
-pip3 install search-torrent
+pip install search-torrent
 search-torrent
 ```
 
 > Use api to get data (movies and subtitles)
 ```bash
-python app.py
+python api.py
 ```
 
 <p align="center"><img src="https://github.com/rajat19/torrent-crawler/blob/master/img/search-torrent-colorized.gif?raw=true"/></p>
@@ -27,11 +27,11 @@ python app.py
 ---
 ### Contributing
 ```bash
-git clone https://github.com/rajat19/torrent-search.git
-cd torrent-search
+git clone https://github.com/rajat19/torrent-crawler.git
+cd torrent-crawler
 pip install -r requirements.txt
 python setup.py install
-python search.py
+python torrent_crawler/search.py
 ```
 
 ---

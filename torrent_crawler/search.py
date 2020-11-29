@@ -59,13 +59,7 @@ class Search:
         for ind, movie in enumerate(movies):
             print('{0}{1}: {2} ({3}){4}'.format(
                 Color.PURPLE, ind + 1, movie.name, movie.year, Color.END))
-        while True:
-            mid = int(input(Color.get_bold_string(Constants.movie_download_text)))
-            if mid > len(movies) or mid < 1:
-                Print.wrong_option()
-                continue
-            else:
-                break
+        mid = Helper.take_int_input(len(movies))
         movie_selected = movies[mid - 1]
         Print.bold_string(Constants.available_torrents_text)
 
@@ -83,9 +77,10 @@ class Search:
                     torrent_link = list(available_torrents.values())[0]
                     Print.bold_string('{0}{1}{2}{3}'.format(
                         Constants.click_link_text, Color.RED, torrent_link, Color.END))
+                else: exit(1)
             else:
-                Print.bold_string(Constants.movie_quality_text)
-                qu = int(input())
+                # Print.bold_string(Constants.movie_quality_text)
+                qu = Helper.take_int_input(len(available_torrents.values()))
                 torrent_link = list(available_torrents.values())[qu - 1]
                 Helper.open_magnet_link(torrent_link)
                 Print.bold_string('{0}{1}{2}{3}'.format(
@@ -124,18 +119,10 @@ class SearchInput:
     def create_query() -> SearchQuery:
         Print.long_hash()
         s = input(Color.get_bold_string(Constants.search_string_text))
+        while not s:
+            s = input(Color.get_bold_string(Constants.search_string_text))
 
         q = 'all'
-        """
-        print('Please enter any specific quality of your torrent: ')
-        quality_options = Constants.quality
-        for i in range(len(quality_options)):
-            print('{0}: {1}'.format(i, quality_options[i]))
-        q = int(input())
-        while q > 4 or q < 0:
-            print('Wrong option, Try again')
-        q = quality_options[q]
-        """
         g = Helper.take_optional_input('genre')
         o = Helper.take_optional_input('order')
 

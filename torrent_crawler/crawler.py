@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import re
 import requests
 from typing import List
+from torrent_crawler.constants import Constants
 from torrent_crawler.helper import Helper
 from torrent_crawler.models import Movie
 
@@ -14,7 +15,7 @@ MoviesList = List[Movie]
 class Crawler:
     def __init__(self, api_flag=False, save_list=False, print_console=False):
         self.api_flag = api_flag
-        self.list_url = 'https://yts.am/browse-movies'
+        self.list_url = Constants.list_url
         self.all_formats = []
         self.id = 1
         self.should_save_list = save_list or False
@@ -28,9 +29,8 @@ class Crawler:
         movies = []
         current_movie_count = 1
         movies_count = 0
+        crawl_url = crawl_url or self.list_url
         while has_next_page:
-            if not crawl_url:
-                crawl_url = self.list_url
             request_url = crawl_url
             if page_no > 1:
                 request_url = '{0}?page={1}'.format(crawl_url, page_no)
